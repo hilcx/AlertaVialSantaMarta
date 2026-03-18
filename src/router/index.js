@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 
 import HomeView from "../views/HomeView.vue"
 import EstadisticasView from "../views/EstadisticasView.vue"
+import LoginView from "../views/LoginView.vue"
 
 const routes = [
   {
@@ -13,7 +14,13 @@ const routes = [
     path: "/estadisticas",
     name: "estadisticas",
     component: EstadisticasView
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: LoginView
   }
+  
 ]
 
 const router = createRouter({
@@ -21,4 +28,22 @@ const router = createRouter({
   routes
 })
 
+
+router.beforeEach((to, from, next) => {
+
+  const usuario = localStorage.getItem("usuarioActivo")
+
+  if (to.path !== "/login" && !usuario) {
+    next("/login")
+  } else {
+    next()
+  }
+
+})
+
 export default router
+
+
+
+
+

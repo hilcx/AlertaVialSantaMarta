@@ -17,8 +17,18 @@ export default {
 <template>
 <div>
   <nav class="menu">
-    <router-link to="/">Inicio</router-link>
-    <router-link to="/estadisticas">Estadísticas</router-link>
+    <div class="left">
+      <h2>Sistema Urbano Santa Marta</h2>
+    </div>
+    <div class="right">
+      <router-link to="/">Inicio</router-link>
+      <router-link to="/estadisticas">Estadísticas</router-link>
+      <span v-if="usuario" class="usuario">
+        {{ usuario.nombre }}
+      </span>
+      <button @click="logout">Salir</button>
+    </div>
+    
   </nav>
   <router-view />
 </div>
@@ -27,20 +37,75 @@ export default {
 
 <script>
 export default {
-  name:"App"
+  name:"App",
+    data(){
+      return{
+        usuario:null
+      }
+    },
+    created(){
+      this.usuario = JSON.parse(localStorage.getItem("usuarioActivo"))
+    },
+    methods: {
+      logout(){
+      localStorage.removeItem("usuarioActivo")
+      this.$router.push("/login")
+    }
+  }
 }
+
 </script>
 
 
 <style>
+body{
+  margin:0;
+  background:#eef2f7;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 .menu{
-  background:#1e88e5;
-  padding:15px;
   display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:linear-gradient(90deg,#1e88e5,#1565c0);
+  padding:15px 30px;
+  color:white;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.left h2{
+  margin:0;
+}
+
+.right{
+  display:flex;
+  align-items:center;
   gap:20px;
 }
 
-.menu a{
+.right a{
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+  padding:6px 10px;
+  border-radius:5px;
+}
+
+.right a:hover{
+  background:rgba(255,255,255,0.2);
+}
+
+.router-link-active{
+  border-bottom:2px solid white;
+}
+
+.usuario{
+  font-size:14px;
+  opacity:0.9;
+}
+
+/* .menu a{
   color:white;
   text-decoration:none;
   font-weight:bold;
@@ -48,7 +113,26 @@ export default {
 
 .menu a.router-link-active{
   text-decoration:underline;
+} */
+
+button{
+  background:#35ade5;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:5px;
+  cursor:pointer;
+  transition:0.3s;
 }
+
+button:hover{
+  transform:scale(1.05);
+  background:#c62828;
+}
+
+/* .card{
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+} */
 </style>
 
 
