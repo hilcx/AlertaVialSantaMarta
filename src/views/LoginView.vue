@@ -53,9 +53,10 @@ export default{
             )
             if(usuario){
                 localStorage.setItem("usuarioActivo", JSON.stringify(usuario))
+                this.$emit("login-exitoso")
                 this.$router.push("/")
             }else{
-                alert("Datos incorrectos")
+                alert("Datos incorrectos, esta cuenta no existe")
             }
         },
         registrar(){
@@ -89,7 +90,7 @@ export default{
 </script>
 
 
-<style>
+<style scoped>
 .login-container{
     display:flex;
     justify-content:center;

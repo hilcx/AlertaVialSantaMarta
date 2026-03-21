@@ -1,35 +1,10 @@
-<!-- <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
-</template>
-
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
-export default {
-  name: 'HomeView',
-  components: {
-    HelloWorld
-  }
-}
-</script> -->
-
-
-
-
-
-
-
 <template>
 <div class="container">
   <header>
-    <h1>Alerta Vial SM</h1>
+    <h1>Alerta Vial Santa Marta</h1>
     <p>Sistema de reporte ciudadano de vías en mal estado</p>
   </header>
-  <div class="stats">
+  <div class="status">
     Total de reportes: {{ reportes.length }}
   </div>
   <div class="filtro">
@@ -60,9 +35,12 @@ export default {
   </div>
 
   <ReportForm @nuevo-reporte="agregarReporte" />
-  <ReportList :reportes="reportesFiltrados" @eliminar-reporte="eliminarReporte"/>
+  <ReportList 
+    :reportes="filtrarReportes()" 
+    @eliminar-reporte="eliminarReporte"
+    @cambiar-estado="cambiarEstado"
+  />
 </div>
-
 </template>
 
 
@@ -82,48 +60,47 @@ export default {
       barrioFiltro:""
     }
   },
-
-created(){
-  const datos = localStorage.getItem("reportesHuecos")
-  if(datos){
-    this.reportes = JSON.parse(datos)
-  }
-},
-
-watch:{
-  reportes:{
-    handler(nuevosReportes){
+  created(){
+    const datos = localStorage.getItem("reportesHuecos")
+    if(datos){
+      this.reportes = JSON.parse(datos)
+    }
+  },
+  methods:{
+    agregarReporte(reporte){
+      this.reportes.push(reporte)
+      this.guardarDatos()
+    },
+    eliminarReporte(index){
+      this.reportes.splice(index,1)
+      this.guardarDatos()
+    },
+    cambiarEstado(index){
+      if(this.reportes[index].estado === "Pendiente"){
+        this.reportes[index].estado = "Solucionado"
+      }else{
+        this.reportes[index].estado = "Pendiente"
+      }
+      this.guardarDatos()
+    },
+    filtrarReportes(){
+      if(this.barrioFiltro === ""){
+        return this.reportes
+      }
+      return this.reportes.filter(r => r.barrio === this.barrioFiltro)
+    },
+    guardarDatos(){
       localStorage.setItem(
         "reportesHuecos",
-        JSON.stringify(nuevosReportes)
+        JSON.stringify(this.reportes)
       )
-    },
-    deep:true
-  }
-},
-computed:{
-  reportesFiltrados(){
-    if(this.barrioFiltro === ""){
-      return this.reportes
     }
-    return this.reportes.filter(r => r.barrio === this.barrioFiltro)
-  }
-},
-
-methods:{
-  agregarReporte(reporte){
-    this.reportes.push(reporte)
-  },
-  eliminarReporte(index){
-    this.reportes.splice(index,1)
   }
 }
-}
-
 </script>
 
 
-<style>
+<style scoped>
 .container{
   max-width:900px;
   margin:auto;
@@ -139,11 +116,12 @@ header{
   margin-bottom:20px;
 }
 
-.stats{
+.status{
   background:#f4f6f8;
   padding:15px;
   border-radius:8px;
   margin-bottom:20px;
+  font-weight:bold;
 }
 
 .filtro{
@@ -167,96 +145,3 @@ select{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <template>
-
-<div class="container">
-
-<header>
-<h1>Huecos SMR</h1>
-<p>Reporte ciudadano de huecos en Santa Marta</p>
-</header>
-
-<div class="stats">
-Total de reportes: {{ reportes.length }}
-</div>
-
-<ReportForm @nuevo-reporte="agregarReporte" />
-
-<ReportList :reportes="reportes" />
-
-</div>
-
-</template>
-
-
-<script>
-
-import ReportForm from "../components/ReportForm.vue"
-import ReportList from "../components/ReportList.vue"
-
-export default {
-  name: "HomeView",
-  components:{
-    ReportForm,
-    ReportList
-},
-
-data(){
-  return{
-    reportes:[]
-  }
-},
-
-methods:{
-  agregarReporte(reporte){
-    this.reportes.push(reporte)
-  }
-
-}
-}
-
-</script>
-
-
-<style>
-
-.container{
-max-width:900px;
-margin:auto;
-font-family:Arial;
-}
-
-header{
-background:#1e88e5;
-color:white;
-padding:20px;
-text-align:center;
-border-radius:8px;
-margin-bottom:20px;
-}
-
-.stats{
-background:#f4f6f8;
-padding:15px;
-border-radius:8px;
-margin-bottom:20px;
-}
-
-</style> -->
