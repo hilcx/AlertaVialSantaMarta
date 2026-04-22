@@ -1,66 +1,3 @@
-<!-- <template>
-<div class="container">
-    <h1>Estadísticas de Reportes</h1>
-    <p>Total de reportes registrados: {{ total }}</p>
-    <div class="stats">
-        <p>Huecos con peligro alto: {{ alto }}</p>
-        <p>Huecos con peligro medio: {{ medio }}</p>
-        <p>Huecos con peligro bajo: {{ bajo }}</p>
-    </div>
-</div>
-</template>
-
-
-<script>
-export default{
-    name:"EstadisticasView",
-    data(){
-        return{
-            reportes:[]
-        }
-    },
-    created(){
-        const datos = localStorage.getItem("reportesHuecos")
-        if(datos){
-            this.reportes = JSON.parse(datos)
-        }
-    },
-    computed:{
-        total(){
-            return this.reportes.length
-        },
-        alto(){
-            return this.reportes.filter(r => r.peligro === "Alto").length
-        },
-        medio(){
-            return this.reportes.filter(r => r.peligro === "Medio").length
-        },
-        bajo(){
-            return this.reportes.filter(r => r.peligro === "Bajo").length
-        }
-    }
-}
-</script>
-
-
-<style>
-.container{
-    max-width:900px;
-    margin:auto;
-    font-family:Arial;
-    padding:20px;
-}
-
-.stats{
-    background:white;
-    padding:20px;
-    border-radius:8px;
-    margin-top:20px;
-}
-</style> -->
-
-
-
 <template>
 <div class="container">
     <h1>Estadísticas de Reportes</h1>
@@ -124,9 +61,10 @@ export default {
 
 <style scoped>
 .container{
-    max-width:900px;
-    margin:auto;
-    font-family:Arial;
+  width:100%;
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
 }
 
 .cards{
@@ -171,5 +109,44 @@ export default {
 .card:hover{
     transform:scale(1.05);
     transition:0.3s;
+}
+
+@media (max-width: 768px){
+    .container{
+        padding:10px;
+    }
+
+    header{
+        font-size:14px;
+        padding:15px;
+    }
+
+    .cards{
+        flex-direction:column;
+    }
+
+    .acciones{
+        flex-direction:column;
+    }
+
+    .supderecha{
+        gap:8px;
+    }
+
+    .supderecha a{
+        font-size:12px;
+        padding:5px 8px;
+    }
+
+    .usuario{
+        font-size:12px;
+        padding:4px 8px;
+    }
+
+    .salir-btn{
+        padding:6px 8px;
+        font-size:12px;
+    }
+
 }
 </style>

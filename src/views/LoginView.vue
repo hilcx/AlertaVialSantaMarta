@@ -1,6 +1,6 @@
 <template>
 <div class="login-container">
-    <div class="card">
+    <div class="login-card">
         <h1></h1>
         <h2 v-if="modo === 'login'">Iniciar sesión</h2>
         <h2 v-else>Registrarse</h2>
@@ -99,7 +99,7 @@ export default{
     background:linear-gradient(135deg,#1e88e5,#42a5f5);
 }
 
-.card{
+.login-card{
     background:white;
     padding:30px;
     border-radius:12px;
@@ -148,4 +148,40 @@ button:hover{
     cursor:pointer;
 }
 
+@media (max-width: 768px){
+    .container{
+        padding:10px;
+    }
+    header{
+        font-size:14px;
+        padding:15px;
+    }
+    .cards{
+        flex-direction:column;
+    }
+    
+    .acciones{
+        flex-direction:column;
+    }
+
+    .supderecha{
+        gap:8px;
+    }
+
+    .supderecha a{
+        font-size:12px;
+        padding:5px 8px;
+    }
+
+    .usuario{
+        font-size:12px;
+        padding:4px 8px;
+    }
+
+    .salir-btn{
+        padding:6px 8px;
+        font-size:12px;
+    }
+
+}
 </style>

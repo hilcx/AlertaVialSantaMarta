@@ -3,6 +3,9 @@
   <header>
     <h1>Alerta Vial Santa Marta</h1>
     <p>Sistema de reporte ciudadano de vías en mal estado</p>
+    <p class="mensaje">
+      Reporta daños en las vías de Santa Marta y ayuda a mejorar tu ciudad
+    </p>
   </header>
   <div class="status">
     Total de reportes: {{ reportes.length }}
@@ -48,6 +51,7 @@
 import ReportForm from "../components/ReportForm.vue"
 import ReportList from "../components/ReportList.vue"
 
+
 export default {
   name: "HomeView",
   components:{
@@ -82,6 +86,7 @@ export default {
         this.reportes[index].estado = "Pendiente"
       }
       this.guardarDatos()
+      alert("Estado actualizado correctamente")
     },
     filtrarReportes(){
       if(this.barrioFiltro === ""){
@@ -102,9 +107,10 @@ export default {
 
 <style scoped>
 .container{
-  max-width:900px;
+  width:100%;
+  max-width:1200px;
   margin:auto;
-  font-family:Arial;
+  padding:20px;
 }
 
 header{
@@ -116,8 +122,14 @@ header{
   margin-bottom:20px;
 }
 
+.mensaje{
+  margin-top:10px;
+  font-size:14px;
+  color:#e3f2fd;
+}
+
 .status{
-  background:#f4f6f8;
+  background:#e3f2fd;
   padding:15px;
   border-radius:8px;
   margin-bottom:20px;
@@ -138,6 +150,46 @@ header{
 select{
   padding:8px;
   margin-left:10px;
+}
+
+@media (max-width: 768px){
+
+  .container{
+    padding:10px;
+  }
+
+  header{
+    font-size:14px;
+    padding:15px;
+  }
+
+  .cards{
+    flex-direction:column;
+  }
+
+  .acciones{
+    flex-direction:column;
+  }
+
+  .supderecha{
+    gap:8px;
+  }
+
+  .supderecha a{
+    font-size:12px;
+    padding:5px 8px;
+  }
+
+  .usuario{
+    font-size:12px;
+    padding:4px 8px;
+  }
+
+  .salir-btn{
+    padding:6px 8px;
+    font-size:12px;
+  }
+
 }
 
 </style>

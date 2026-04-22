@@ -1,15 +1,18 @@
 <template>
 <div>
-  <nav class="menu">
+  <nav class="menu" v-if="$route.path !== '/login'">
     <div class="supizquierda">
       <h2>Sistema Urbano Santa Marta</h2>
     </div>
     <div class="supderecha"> 
       <router-link to="/">Inicio</router-link>
       <router-link to="/estadisticas">Estadísticas</router-link>
+      <router-link v-if="usuario" to="/perfil">Perfil</router-link>
+      
       <span v-if="usuario" class="usuario">
         {{ usuario.nombre }}
       </span>
+      
       <button v-if="usuario" class="salir-btn" @click="logout">
         Salir
       </button>
@@ -78,10 +81,11 @@ body{
   color:white;
   text-decoration:none;
   font-weight:bold;
-  padding:6px 10px;
-  border-radius:5px;
-  display:flex;
-  align-items:center;
+  padding:8px 12px;
+  border-radius: 6px;
+  transition:0.3s;
+  /* display:flex;
+  align-items:center; */
 }
 
 .supderecha a:hover{
@@ -99,8 +103,8 @@ body{
   display:flex;
   align-items:center;
   background:rgba(255,255,255,0.2);
-  padding:5px 10px;
-  border-radius:5px;
+  padding:6px 12px;
+  border-radius:6px;
 }
 
 .salir-btn{
@@ -110,11 +114,27 @@ body{
   font-weight:bold;
   padding:8px 12px;
   cursor:pointer;
-  border-radius:5px;
+  border-radius:6px;
+  transition:0.3s;
 }
 
 .salir-btn:hover{
-  background:rgba(148, 8, 8, 0.2);
+  background: #e53935;
+  color:white;
+}
+
+@media (max-width: 768px){
+
+  .menu{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .supderecha{
+    flex-wrap:wrap;
+  }
+
 }
 </style>
 

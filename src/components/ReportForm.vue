@@ -60,7 +60,8 @@ export default{
                 barrio: this.barrio,
                 peligro: this.peligro,
                 estado: "Pendiente",
-                fecha: this.fecha
+                fecha: this.fecha,
+                usuarioEmail: JSON.parse(localStorage.getItem("usuarioActivo")).email
             }
             this.$emit("nuevo-reporte",reporte)
             this.calle= ""
@@ -102,18 +103,34 @@ button{
     background:#1e88e5;
     color:white;
     border:none;
-    border-radius:5px;
+    border-radius: 6px;
     cursor:pointer;
+    transition:0.3s;
 }
 
 button:hover{
-    background:#1565c0;
+    background:#43a047;
 }
 
 label{
     display:block;
     margin-top:10px;
     font-weight:bold;
+}
+
+@media (max-width: 768px){
+    .formulario{
+        padding:15px;
+    }
+
+    input, textarea, select{
+        font-size:14px;
+    }
+
+    button{
+        font-size:14px;
+    }
+
 }
 </style>
 

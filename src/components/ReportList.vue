@@ -21,7 +21,7 @@
                 {{ reporte.peligro }}
             </span>
         </p>
-        <P>
+        <p>
             <strong>Estado:</strong>
             <span 
                 :class="[
@@ -77,12 +77,17 @@ export default{
 }
 
 .card{
-    background:#fafafa;
+    background:#ffffff;
     padding:15px;
-    border-radius:8px;
+    border-radius: 10px;
     margin-top:15px;
     border-left:5px solid #1e88e5;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    transition:0.2s;
+}
+
+.card:hover{
+  transform:scale(1.02);
 }
 
 .estado{
@@ -97,6 +102,11 @@ export default{
     padding:6px 10px;
     border-radius:5px;
     cursor:pointer;
+    transition:0.3s;
+}
+
+.delete:hover{
+  background:#b71c1c;
 }
 
 
@@ -149,9 +159,26 @@ export default{
     padding:6px 10px;
     border-radius:5px;
     cursor:pointer;
+    transition:0.3s;
 }
+
+.estado-button:hover{
+  background:#1565c0;
+}
+
 button:hover{
     transform:scale(1.05);
+}
+
+@media (max-width: 768px){
+    .card{
+        padding:12px;
+    }
+
+    .acciones{
+        flex-direction:column;
+    }
+
 }
 </style>
 
