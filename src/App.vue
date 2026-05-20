@@ -29,11 +29,18 @@ export default {
   name:"App",
     data(){
       return{
-        usuario:null
+        usuario: null,
+        temaOscuro: false
       }
     },
     created(){
       this.usuario = JSON.parse(localStorage.getItem("usuarioActivo"))
+
+      const temaGuardado = localStorage.getItem("temaOscuro")
+      if(temaGuardado === "true"){
+        this.temaOscuro = true
+        document.body.classList.add("dark")
+      }
     },
     methods: {
       logout(){
@@ -43,6 +50,15 @@ export default {
     },
     actualizarUsuario(){
       this.usuario = JSON.parse(localStorage.getItem("usuarioActivo"))
+    },
+    cambiarTema(){
+      this.temaOscuro = !this.temaOscuro
+      localStorage.setItem("temaOscuro", this.temaOscuro)
+      if(this.temaOscuro){
+        document.body.classList.add("dark")
+      }else{
+        document.body.classList.remove("dark")
+      }
     }
   }
 }
@@ -123,6 +139,22 @@ body{
   color:white;
 }
 
+.modo-btn{
+  background:white;
+  color:#1565c0;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.modo-btn:hover{
+  transform:scale(1.05);
+  background:#eeeeee;
+}
+
 @media (max-width: 768px){
 
   .menu{
@@ -136,36 +168,54 @@ body{
   }
 
 }
+
+body.dark{
+
+    background:#121212;
+    color:white;
+
+}
+
+body.dark .container,
+body.dark .card,
+body.dark .reportes,
+body.dark .formulario,
+body.dark .mapa,
+body.dark .status,
+body.dark .extra,
+body.dark .login-card{
+
+    background:#1f1f1f !important;
+    color:white !important;
+
+}
+
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark p,
+body.dark span,
+body.dark strong,
+body.dark label{
+
+    color:white !important;
+
+}
+
+body.dark input,
+body.dark textarea,
+body.dark select{
+
+    background:#2c2c2c;
+    color:white;
+    border:1px solid #555;
+
+}
+
+body.dark .card{
+
+    border-left-color:#42a5f5 !important;
+
+}
+
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

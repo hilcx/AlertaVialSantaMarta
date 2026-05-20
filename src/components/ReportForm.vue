@@ -22,6 +22,9 @@
     </select>
     <label>Fecha del reporte:</label>
     <input type="date" v-model="fecha">
+
+    <label>Foto del daño:</label>
+    <input type="file" @change="subirImagen">
     <button @click="enviarReporte">
         Enviar reporte
     </button>
@@ -38,11 +41,21 @@ export default{
             descripcion:"",
             barrio:"",
             peligro:"",
-            fecha:""
+            fecha:"",
+            foto:""
         }
     },
     
     methods:{
+        subirImagen(event){
+            const archivo = event.target.files[0]
+            if(!archivo) return
+            const reader = new FileReader()
+            reader.onload = () => {
+                this.foto = reader.result
+            }
+            reader.readAsDataURL(archivo)
+        },
         enviarReporte(){
             if(
                 this.calle === "" ||
@@ -61,7 +74,9 @@ export default{
                 peligro: this.peligro,
                 estado: "Pendiente",
                 fecha: this.fecha,
-                usuarioEmail: JSON.parse(localStorage.getItem("usuarioActivo")).email
+                foto: this.foto,
+                usuarioEmail: JSON.parse(localStorage.getItem("usuarioActivo")).email,
+                usuarioNombre: JSON.parse(localStorage.getItem("usuarioActivo")).nombre
             }
             this.$emit("nuevo-reporte",reporte)
             this.calle= ""

@@ -1,5 +1,4 @@
 <template>
-
 <div class="container">
 
   <h1>Perfil de Usuario</h1>
@@ -13,10 +12,21 @@
       <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
       <p><strong>Correo:</strong> {{ usuario.email }}</p>
       <p><strong>Cédula:</strong> {{ usuario.cedula }}</p>
-      <p><strong>Rol:</strong> Usuario</p>
+      <p><strong>Rol:</strong> Usuario ciudadano</p>
+      <p>
+        <strong>Usuario desde:</strong>
+        {{ usuario.fechaRegistro }}
+      </p>
     </div>
 
   </div>
+
+  <p v-if="total > 0" class="mensaje">
+    Gracias por contribuir con la ciudad
+  </p>
+  <p v-else class="mensaje">
+    Aún no has realizado reportes
+  </p>
 
   <div class="estadisticas">
     <div class="card">
@@ -33,6 +43,13 @@
       <h3>Solucionados</h3>
       <p>{{ solucionados }}</p>
     </div>
+
+  </div>
+
+  <div class="ultimo" v-if="ultimoReporte">
+    <h2>Último reporte</h2>
+    <p><strong>Calle:</strong> {{ ultimoReporte.calle }}</p>
+    <p><strong>Fecha:</strong> {{ ultimoReporte.fecha }}</p>
 
   </div>
 
@@ -66,6 +83,9 @@
     <h2>Configuración</h2>
     <p>Idioma: Español</p>
     <p>Notificaciones: Activadas</p>
+    <button class="tema-btn" @click="cambiarTema">
+      {{ temaOscuro ? '☀️ Modo claro' : '🌙 Modo oscuro' }}
+  </button>
   </div>
 
 </div>
@@ -80,14 +100,14 @@ export default {
       usuario:{},
       reportes:[],
       misReportes:[],
-      total:0,
-      pendientes:0,
-      solucionados:0
+      total: 0,
+      pendientes: 0,
+      solucionados: 0,
+      ultimoReporte: null
     }
   },
 
   created(){
-
     this.usuario = JSON.parse(localStorage.getItem("usuarioActivo")) || {}
     const datos = localStorage.getItem("reportesHuecos")
 
@@ -112,9 +132,23 @@ export default {
         }
       }
     }
+    if(this.misReportes.length > 0){
+      this.ultimoReporte = this.misReportes[this.misReportes.length - 1]
+    }
 
+  },
+  methods: {
+    cambiarTema(){
+      const actual = localStorage.getItem("temaOscuro")
+      if(actual === "true"){
+        localStorage.setItem("temaOscuro", false)
+        document.body.classList.remove("dark")
+      }else{
+        localStorage.setItem("temaOscuro", true)
+        document.body.classList.add("dark")
+      }
+    }
   }
-
 }
 </script>
 
@@ -145,6 +179,12 @@ export default {
   margin:5px 0;
 }
 
+.mensaje{
+  margin-top: 15px;
+  font-weight: bold;
+  color:#1e88e5;
+}
+
 .estadisticas{
   display:flex;
   gap:10px;
@@ -170,6 +210,13 @@ export default {
   font-weight:bold;
 }
 
+.ultimo{
+  margin-top: 20px;
+  background:white;
+  padding: 15px;
+  border-radius:10px;
+}
+
 .mis-reportes{
   margin-top:20px;
   background:white;
@@ -192,5 +239,23 @@ export default {
   background:white;
   padding:15px;
   border-radius:10px;
+}
+
+.tema-btn{
+  background:linear-gradient(90deg,#1e88e5,#1565c0);
+  color:white;
+  border:none;
+  padding:12px 18px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  margin-top:10px;
+  transition:0.3s;
+
+}
+
+.tema-btn:hover{
+  transform:scale(1.05);
+
 }
 </style>

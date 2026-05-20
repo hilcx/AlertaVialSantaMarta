@@ -21,6 +21,45 @@
             <p>{{ alto }}</p>
         </div>
     </div>
+    
+    <div class="extra">
+        <h2>Información general</h2>
+
+        <p>
+          Barrio con más reportes:
+          <strong>{{ barrioMasReportes }}</strong>
+        </p>
+
+        <p>
+          Nivel más reportado:
+          <strong>{{ peligroMasComun }}</strong>
+        </p>
+
+        <p>
+            Último reporte:
+            <strong>{{ ultimoReporte }}</strong>
+        </p>
+
+        <p>
+            Porcentaje solucionado:
+            <strong>{{ porcentajeSolucionado }}%</strong>
+        </p>
+
+        <div class="barra">
+            <div 
+                class="progreso"
+                :style="{ width: porcentajeSolucionado + '%' }"
+            >
+            {{ porcentajeSolucionado }}%
+        </div>
+
+        </div>
+        <div class="niveles">
+            <p>🟥 Alto: {{ alto }}</p>
+            <p>🟧 Medio: {{ medio }}</p>
+            <p>🟩 Bajo: {{ bajo }}</p>
+        </div>
+    </div>
 </div>
 </template>
 
@@ -33,7 +72,14 @@ export default {
             total:0,
             pendientes:0,
             solucionados:0,
-            alto:0
+            alto: 0,
+            medio: 0,
+            bajo: 0,
+            barrioMasReportes: "",
+            peligroMasComun: "",
+            ultimoReporte:"",
+
+            porcentajeSolucionado:0
         }
     },
     created(){
@@ -42,8 +88,10 @@ export default {
             this.reportes = JSON.parse(datos)
         }
         this.total = this.reportes.length
-        for(let i = 0; i < this.reportes.length; i++){
-            const r = this.reportes[i]
+
+        let barrios = {}
+        let peligros = {}
+        this.reportes.forEach(r => {
             if(r.estado === "Pendiente"){
                 this.pendientes++
             }
@@ -53,28 +101,48 @@ export default {
             if(r.peligro === "Alto"){
                 this.alto++
             }
+            if(r.peligro === "Medio"){
+                this.medio++
+            }
+            if(r.peligro === "Bajo"){
+                this.bajo++
+            }
+
+            barrios[r.barrio] =
+                (barrios[r.barrio] || 0) + 1
+
+            peligros[r.peligro] =
+                (peligros[r.peligro] || 0) + 1
+        })
+        this.barrioMasReportes = Object.keys(barrios).reduce((a,b) => barrios[a] > barrios[b] ? a : b,"")
+        this.peligroMasComun = Object.keys(peligros).reduce((a,b) => peligros[a] > peligros[b] ? a : b, "")
+        if(this.reportes.length > 0){
+            this.ultimoReporte = this.reportes[this.reportes.length - 1].calle
         }
+        this.porcentajeSolucionado = Math.round((this.solucionados / this.total) * 100) || 0
     }
 }
+
 </script>
 
 
 <style scoped>
 .container{
-  width:100%;
-  max-width:1200px;
+  width: 100%;
+  max-width: 1200px;
   margin:auto;
   padding:20px;
 }
 
 .cards{
-    display:flex;
-    gap:15px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
     margin:20px 0;
 }
 
 .card{
-    flex:1;
+    /* flex:1;
     height:140px;
     background:white;
     padding:20px;
@@ -86,7 +154,14 @@ export default {
     justify-content:center;
     align-items:center;
 
-    border-left:6px solid transparent;
+    border-left:6px solid transparent; */
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    transition:0.3s;
+    border-left:6px solid #1e88e5;
 }
 
 .card.pendiente{
@@ -101,51 +176,80 @@ export default {
     border-left:5px solid red;
 }
 
-.card p{
+/* .card p{
     font-size:22px;
     font-weight:bold;
-}
+} */
 
 .card:hover{
-    transform:scale(1.05);
-    transition:0.3s;
+    /* transform:scale(1.05);
+    transition:0.3s; */
+    transform:translateY(-5px);
 }
 
-@media (max-width: 768px){
+.card p{
+
+    font-size:30px;
+    font-weight:bold;
+
+}
+
+.extra{
+
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    margin-top:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+
+}
+
+.extra p{
+
+    margin-top:15px;
+    font-size:16px;
+
+}
+
+.barra{
+
+    width:100%;
+    height:30px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:20px;
+
+}
+
+.progreso{
+
+    height:100%;
+    background:#43a047;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+
+}
+
+.niveles{
+
+    margin-top:20px;
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    font-weight:bold;
+
+}
+
+@media (max-width:768px){
+
     .container{
+
         padding:10px;
-    }
 
-    header{
-        font-size:14px;
-        padding:15px;
-    }
-
-    .cards{
-        flex-direction:column;
-    }
-
-    .acciones{
-        flex-direction:column;
-    }
-
-    .supderecha{
-        gap:8px;
-    }
-
-    .supderecha a{
-        font-size:12px;
-        padding:5px 8px;
-    }
-
-    .usuario{
-        font-size:12px;
-        padding:4px 8px;
-    }
-
-    .salir-btn{
-        padding:6px 8px;
-        font-size:12px;
     }
 
 }

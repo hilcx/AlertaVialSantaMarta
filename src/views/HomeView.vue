@@ -38,6 +38,9 @@
   </div>
 
   <ReportForm @nuevo-reporte="agregarReporte" />
+  <div v-if="loading" class="loading">
+    Cargando reportes...
+  </div>
   <ReportList 
     :reportes="filtrarReportes()" 
     @eliminar-reporte="eliminarReporte"
@@ -51,55 +54,82 @@
 import ReportForm from "../components/ReportForm.vue"
 import ReportList from "../components/ReportList.vue"
 
-
 export default {
   name: "HomeView",
+  
   components:{
     ReportForm,
     ReportList
   },
   data(){
     return{
-      reportes:[],
-      barrioFiltro:""
+      reportes: [],
+      barrioFiltro:"",
+      loading: true
     }
   },
-  created(){
-    const datos = localStorage.getItem("reportesHuecos")
-    if(datos){
-      this.reportes = JSON.parse(datos)
+  async created(){
+    try{
+      const token = localStorage.getItem("token")
+      const respuesta = await fetch(
+        "http://localhost:3000/reportes",
+        {
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        }
+      )
+      const datos = await respuesta.json()
+      console.log(datos)
+      if(Array.isArray(datos)){
+        this.reportes = datos
+      }else{
+        this.reportes = []
+        alert(datos.mensaje)
+      }
+      this.loading = false
+    }catch(error){
+      console.log(error)
+      this.reportes = []
     }
   },
   methods:{
     agregarReporte(reporte){
       this.reportes.push(reporte)
-      this.guardarDatos()
+      localStorage.setItem("reportesHuecos", JSON.stringify(this.reportes))
+      // this.guardarDatos()
     },
     eliminarReporte(index){
       this.reportes.splice(index,1)
-      this.guardarDatos()
+      localStorage.setItem("reportesHuecos", JSON.stringify(this.reportes))
+      
+      // this.guardarDatos()
     },
+
     cambiarEstado(index){
       if(this.reportes[index].estado === "Pendiente"){
         this.reportes[index].estado = "Solucionado"
       }else{
         this.reportes[index].estado = "Pendiente"
       }
-      this.guardarDatos()
+      // this.guardarDatos()
+      localStorage.setItem("reportesHuecos", JSON.stringify(this.reportes))
       alert("Estado actualizado correctamente")
     },
+
     filtrarReportes(){
       if(this.barrioFiltro === ""){
         return this.reportes
       }
       return this.reportes.filter(r => r.barrio === this.barrioFiltro)
     },
-    guardarDatos(){
-      localStorage.setItem(
-        "reportesHuecos",
-        JSON.stringify(this.reportes)
-      )
-    }
+
+    // guardarDatos(){
+    //   localStorage.setItem(
+    //     "reportesHuecos",
+    //     JSON.stringify(this.reportes)
+    //   )
+    // }
   }
 }
 </script>
@@ -190,6 +220,18 @@ select{
     font-size:12px;
   }
 
+}
+
+
+.loading{
+  background:white;
+  padding:20px;
+  text-align:center;
+  border-radius:8px;
+  font-weight:bold;
+  color:#1e88e5;
+  margin-bottom:20px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
 </style>

@@ -1,5 +1,12 @@
 <template>
 <div class="login-container">
+    <div class="titulo-app">
+        <h1>Alerta Vial Santa Marta</h1>
+        <p>
+            Plataforma ciudadana para el reporte
+            de daños en las vías públicas
+        </p>
+    </div>
     <div class="login-card">
         <h1></h1>
         <h2 v-if="modo === 'login'">Iniciar sesión</h2>
@@ -46,43 +53,70 @@ export default{
                 this.registrar()
             }
         },
-        login(){
-                const usuarios = JSON.parse(localStorage.getItem("usuarios")) || []
-                const usuario = usuarios.find(u => 
-                u.email === this.email && u.password === this.password
-            )
-            if(usuario){
-                localStorage.setItem("usuarioActivo", JSON.stringify(usuario))
-                this.$emit("login-exitoso")
-                this.$router.push("/")
-            }else{
-                alert("Datos incorrectos, esta cuenta no existe")
+        async login(){
+            try{
+                const respuesta = await fetch("http://localhost:3000/login",{
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body: JSON.stringify({
+                        email:this.email,
+                        password:this.password
+                    })
+                })
+                const datos = await respuesta.json()
+                if(respuesta.ok){
+                    localStorage.setItem("token", datos.token)
+
+                    localStorage.setItem(
+                        "usuarioActivo",
+                        JSON.stringify(datos.usuario)
+                    )
+                    this.$emit("login-exitoso")
+                    this.$router.push("/")
+                }else{
+                    alert(datos.mensaje)
+                }
+            }catch(error){
+                console.log(error)
+                alert("Error al iniciar sesión")
             }
         },
-        registrar(){
-            if(this.nombre === "" || this.cedula === "" ||this.email === "" || this.password === ""){
+        async registrar(){
+            if(
+                this.nombre === "" ||
+                this.cedula === "" ||
+                this.email === "" ||
+                this.password === ""
+            ){
                 alert("Completa los campos")
                 return
             }
-            let usuarios = JSON.parse(localStorage.getItem("usuarios")) || []
-            const existe = usuarios.find(u => u.email === this.email)
-            if(existe){
-                alert("Este correo ya está registrado")
-                return
+            try{
+                const respuesta = await fetch("http://localhost:3000/registro",{
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body: JSON.stringify({
+                        nombre:this.nombre,
+                        cedula:this.cedula,
+                        email:this.email,
+                        password:this.password
+                    })
+                })
+                const datos = await respuesta.json()
+                alert(datos.mensaje)
+                this.nombre = ""
+                this.cedula = ""
+                this.email = ""
+                this.password = ""
+                this.modo = "login"
+            }catch(error){
+                console.log(error)
+                alert("Error al registrar")
             }
-            usuarios.push({
-                nombre:this.nombre,
-                cedula:this.cedula,
-                email:this.email,
-                password:this.password
-            })
-            localStorage.setItem("usuarios", JSON.stringify(usuarios))
-            alert("Registro exitoso")
-            this.nombre = ""
-            this.cedula = ""
-            this.email = ""
-            this.password = ""
-            this.modo = "login"
         }
     }
 }
@@ -97,6 +131,22 @@ export default{
     align-items:center;
     height:100vh;
     background:linear-gradient(135deg,#1e88e5,#42a5f5);
+}
+
+.titulo-app{
+    text-align:center;
+    color:white;
+    margin-bottom:25px;
+}
+
+.titulo-app h1{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.titulo-app p{
+    font-size:16px;
+    opacity:0.9;
 }
 
 .login-card{

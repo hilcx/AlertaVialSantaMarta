@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "calle": "Calle 22",
+    "barrio": "Centro",
+    "descripcion": "Hueco grande en la vía",
+    "peligro": "Alto",
+    "estado": "Pendiente",
+    "fecha": "2026-05-18",
+    "usuarioNombre": "Carlos Pérez"
+  },
+  {
+    "id": 2,
+    "calle": "Carrera 19",
+    "barrio": "Rodadero",
+    "descripcion": "Vía deteriorada",
+    "peligro": "Medio",
+    "estado": "Solucionado",
+    "fecha": "2026-05-15",
+    "usuarioNombre": "Ana Torres"
+  }
+]

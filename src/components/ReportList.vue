@@ -2,7 +2,7 @@
 <div class="reportes">
     <h2>Reportes registrados</h2>
     <p v-show="reportes.length > 0" class="mensaje">
-        Hay reportes registrados en el sistema
+        Mostrando {{ reportes.length }} reportes registrados
     </p>
     <div v-if="reportes.length === 0">
         No hay reportes todavía
@@ -10,7 +10,15 @@
     <div v-for="(reporte,index) in reportes" :key="index" class="card">
         <h3>{{ reporte.calle }}</h3>
         <p><strong>Barrio:</strong> {{ reporte.barrio }}</p>
+        <p class="autor">
+            Reportado por: {{ reporte.usuarioNombre }}
+        </p>
         <p>{{ reporte.descripcion }}</p>
+        <img
+        v-if="reporte.foto"
+        :src="reporte.foto"
+        class="foto-reporte"
+        />
         <p>
             <strong>Peligro:</strong>
             <span :class="{
@@ -38,11 +46,17 @@
 
         
         <div class="acciones">
-            <button class="estado-button" @click="$emit('cambiar-estado', index)">
-                Cambiar estado
+            <button v-if="esAdmin()" :class="reporte.estado === 'Pendiente' ? 'estado-button pendiente-btn' : 'estado-button solucionado-btn'"
+            @click="$emit('cambiar-estado', index)">
+                {{ reporte.estado === 'Pendiente' ? 'Marcar como solucionado' : 'Marcar como pendiente' }}
             </button>
 
-            <button class="delete" @click="$emit('eliminar-reporte', index)">
+
+            <!-- <button class="estado-button" @click="$emit('cambiar-estado', index)">
+                Cambiar estado
+            </button> -->
+
+            <button v-if="puedeEditar(reporte)" class="delete" @click="confirmarEliminar(index)">
                 Eliminar
             </button>
         </div>
@@ -58,6 +72,25 @@ export default{
     name:"ReportList",
     props:{
         reportes:Array
+    },
+    computed:{
+        esAdmin(){
+            const usuario = JSON.parse(localStorage.getItem("usuarioActivo"))
+            return usuario && usuario.rol === "admin"
+        }
+    },
+    methods:{
+        esPropio(reporte){
+            const usuario = JSON.parse(localStorage.getItem("usuarioActivo"))
+            return usuario && usuario.email === reporte.usuarioEmail
+
+        },
+        confirmarEliminar(index){
+            const confirmar = confirm("¿Seguro que quieres eliminar este reporte?")
+            if(confirmar){
+                this.$emit("eliminar-reporte", index)
+            }
+        }
     }
 }
 </script>
@@ -70,6 +103,22 @@ export default{
     border-radius:8px;
 }
 
+.foto-reporte{
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.autor{
+    font-size: 12px;
+    color:#666;
+    margin-bottom: 5px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
 .mensaje{
     font-size:14px;
     color:#555;
@@ -78,12 +127,13 @@ export default{
 
 .card{
     background:#ffffff;
-    padding:15px;
+    padding: 15px;
     border-radius: 10px;
-    margin-top:15px;
-    border-left:5px solid #1e88e5;
+    margin-top: 15px;
+    border-left: 5px solid #1e88e5;
+    border-bottom: 1px solid #eee;
     box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    transition:0.2s;
+    transition: 0.2s;
 }
 
 .card:hover{
@@ -134,22 +184,28 @@ export default{
 }
 
 .pendiente{
-    background:#f57c00;
+    background:#fff3e0;
+    color:#fb8c00;
+    font-weight: bold;
 }
 
 .solucionado{
-    background:#43a047;
+    background:#e8f5e9;
+    color:#2e7d32;
+    font-weight: bold;
 }
 
 .fecha{
-    font-size:12px;
-    color:#555;
+    font-size: 12px;
+    color:#777;
+    margin-top: 5px;
 }
 
 .acciones{
     margin-top:10px;
-    display:flex;
-    gap:10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .estado-button{
@@ -162,8 +218,24 @@ export default{
     transition:0.3s;
 }
 
+.pendiente-btn{
+    background:#f57c00;
+}
+
+.pendiente-btn:hover{
+    background:#ef6c00;
+}
+
+.solucionado-btn{
+    background:#43a047;
+}
+
+.solucionado-btn:hover{
+    background:#2e7d32;
+}
+
 .estado-button:hover{
-  background:#1565c0;
+    background:#1565c0;
 }
 
 button:hover{
